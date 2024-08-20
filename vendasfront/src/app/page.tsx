@@ -3,7 +3,7 @@ export default function Home() {
     <div>
       <h1>
         Hello!
-        <button className="button">Button</button>
+        <button className="button" >Button</button>
       </h1>
     </div>
   );
