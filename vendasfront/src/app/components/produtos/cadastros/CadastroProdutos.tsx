@@ -1,16 +1,16 @@
 'use client'
 
-import { Layout } from '@/app/components'
+import { Layout, Input } from '@/app/components'
 import { useState } from 'react'
 
 type Props = {}
 
 export const CadastroProdutos = (props: Props) => {
 
-  const [sku, setSku] = useState("")
-  const [preco, setPreco] = useState("")
-  const [nome, setNome] = useState("")
-  const [descricao, setDescricao] = useState("")
+  const [sku, setSku] = useState<string>("")
+  const [preco, setPreco] = useState<string>("")
+  const [nome, setNome] = useState<string>("")
+  const [descricao, setDescricao] = useState<string>("")
 
   function submit() {
     const produto = {
@@ -22,38 +22,23 @@ export const CadastroProdutos = (props: Props) => {
   return (
     <Layout titulo='Cadastro de produtos' >
       <div className="columns">
-        <div className='field is-half column'>
-          <label className='label' htmlFor='inputSku'>SKU: *</label>
-          <div className="control">
-            <input className='input'
-              id="inputSku"
-              value={sku}
-              onChange={(e) => setSku(e.target.value)}
-              placeholder='Digite o SKU do produto' />
-          </div>
-        </div>
-        <div className='field is-half column'>
-          <label className='label' htmlFor='inputPreco'>Preço: *</label>
-          <div className="control">
-            <input className='input'
-              id="inputPreco"
-              value={preco}
-              onChange={(e) => setPreco(e.target.value)}
-              placeholder='Digite o preço do produto' />
-          </div>
-        </div>
+        <Input label='SKU: *' 
+               value={sku} 
+               columnClasses='is-half'
+               ForAndId='Sku'
+               onChange={setSku}/>
+        <Input label='Preço: *' 
+               value={preco} 
+               columnClasses='is-half'
+               ForAndId='Preco'
+               onChange={setPreco}/>       
       </div>
       <div className="columns">
-        <div className='field is-full column'>
-          <label className='label' htmlFor='inputNome'>Nome: *</label>
-          <div className="control">
-            <input className='input'
-              id="inputNome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder='Digite o nome do produto' />
-          </div>
-        </div>
+      <Input label='Nome: *' 
+               value={nome} 
+               columnClasses='is-full'
+               ForAndId='Nome'
+               onChange={setNome}/>    
       </div>
       <div className="columns">
         <div className='field is-full column'>
