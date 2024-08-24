@@ -27,12 +27,15 @@ public class ProdutoController {
         );
         */
 
+        /*
         Produto.builder()
                 .nome(produto.getNome())
                 .preco(produto.getPreco())
                 .descricao(produto.getDescricao())
                 .sku(produto.getSku())
                 .build();
+
+         */
 
         produtoRepository.save(produto);
 
