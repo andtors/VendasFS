@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    @Autowired
     private ProdutoRepository produtoRepository;
 
     @PostMapping
@@ -34,7 +33,6 @@ public class ProdutoController {
                 .descricao(produto.getDescricao())
                 .sku(produto.getSku())
                 .build();
-
          */
 
         produtoRepository.save(produto);

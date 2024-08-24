@@ -29,6 +29,5 @@ public class Produto {
     @Column
     private String sku;
 
-    public Produto(String nome, String descricao, BigDecimal preco, String sku) {
-    }
+
 }
