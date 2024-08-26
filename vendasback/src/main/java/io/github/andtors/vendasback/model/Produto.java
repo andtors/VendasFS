@@ -2,8 +2,10 @@ package io.github.andtors.vendasback.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "produto")
@@ -29,5 +31,11 @@ public class Produto {
     @Column
     private String sku;
 
+    @Column (name =  "data_cadastro")
+    private LocalDate dataCadastro;
 
+    @PrePersist
+    public void prePersist(){
+        setDataCadastro(LocalDate.now());
+    }
 }

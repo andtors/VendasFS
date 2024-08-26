@@ -9,5 +9,4 @@ public class VendasbackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VendasbackApplication.class, args);
 	}
-
 }

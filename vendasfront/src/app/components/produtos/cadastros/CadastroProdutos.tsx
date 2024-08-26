@@ -2,43 +2,48 @@
 
 import { Layout, Input } from '@/app/components'
 import { useState } from 'react'
+import { useProdutoService } from '../../../api/services/index'
+import { IProduto } from '../../../api/models/produtos/IProduto'
 
 type Props = {}
 
 export const CadastroProdutos = (props: Props) => {
 
+  const service = useProdutoService()
   const [sku, setSku] = useState<string>("")
   const [preco, setPreco] = useState<string>("")
   const [nome, setNome] = useState<string>("")
   const [descricao, setDescricao] = useState<string>("")
 
   function submit() {
-    const produto = {
-      sku, preco, nome, descricao
+    const produto: IProduto = {
+      sku, preco: parseFloat(preco), nome, descricao
     }
-    console.log(produto)
+    service
+    .salvar(produto)
+    .then(produtoResposta => console.log(produtoResposta))
   }
 
   return (
     <Layout titulo='Cadastro de produtos' >
       <div className="columns">
-        <Input label='SKU: *' 
-               value={sku} 
-               columnClasses='is-half'
-               ForAndId='Sku'
-               onChange={setSku}/>
-        <Input label='Preço: *' 
-               value={preco} 
-               columnClasses='is-half'
-               ForAndId='Preco'
-               onChange={setPreco}/>       
+        <Input label='SKU: *'
+          value={sku}
+          columnClasses='is-half'
+          ForAndId='Sku'
+          onChange={setSku} />
+        <Input label='Preço: *'
+          value={preco}
+          columnClasses='is-half'
+          ForAndId='Preco'
+          onChange={setPreco} />
       </div>
       <div className="columns">
-      <Input label='Nome: *' 
-               value={nome} 
-               columnClasses='is-full'
-               ForAndId='Nome'
-               onChange={setNome}/>    
+        <Input label='Nome: *'
+          value={nome}
+          columnClasses='is-full'
+          ForAndId='Nome'
+          onChange={setNome} />
       </div>
       <div className="columns">
         <div className='field is-full column'>
