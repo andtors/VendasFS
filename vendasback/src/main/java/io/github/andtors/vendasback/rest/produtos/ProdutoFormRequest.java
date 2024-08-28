@@ -25,7 +25,7 @@ public class ProdutoFormRequest {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate cadastro;
 
-    public Produto ToModel(){
+    public Produto toModel(){
         return new Produto(id, nome, descricao, preco, sku, cadastro);
     }
 
