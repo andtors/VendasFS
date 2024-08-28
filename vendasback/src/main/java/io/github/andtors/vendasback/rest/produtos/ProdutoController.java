@@ -3,6 +3,7 @@ package io.github.andtors.vendasback.rest.produtos;
 import io.github.andtors.vendasback.model.Produto;
 import io.github.andtors.vendasback.model.exception.ValidationException;
 import io.github.andtors.vendasback.model.repository.ProdutoRepository;
+import io.github.andtors.vendasback.model.service.ProdutoService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.format.TextStyle;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +21,8 @@ public class ProdutoController {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    private  ProdutoService produtoService;
 
     @PostMapping
     public ProdutoFormRequest salvar( @RequestBody ProdutoFormRequest produto ){
@@ -30,13 +34,13 @@ public class ProdutoController {
         return ProdutoFormRequest.fromModel(entidadeProduto);
     }
 
-    @PutMapping({"id"})
-    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody ProdutoFormRequest produto){
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody ProdutoFormRequest produto){
 
-        /*
         Optional<Produto> produtoExistente = produtoRepository.findById(id);
 
         if(produtoExistente.isEmpty()){
+            System.out.println("Produto não encotrado.");
             return ResponseEntity.notFound().build();
         }
 
@@ -47,19 +51,7 @@ public class ProdutoController {
         produtoRepository.save(entidade);
 
         return ResponseEntity.ok().build();
-        */
 
-        return  produtoRepository.findById(id)
-                .map( entity -> {
-                    try {
-                        Produto entidade = produto.toModel();
-                        entidade.setId(id);
-                        produtoRepository.save(entidade);
-                        return ResponseEntity.ok().build();
-                    } catch (ValidationException e) {
-                        return ResponseEntity.badRequest().body(e.getMessage());
-                    }
-                }).orElseGet( () -> new ResponseEntity("User not found.",HttpStatus.NOT_FOUND));
 
     }
 }
