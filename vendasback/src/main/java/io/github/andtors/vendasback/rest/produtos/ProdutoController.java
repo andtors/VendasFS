@@ -1,9 +1,7 @@
 package io.github.andtors.vendasback.rest.produtos;
 
 import io.github.andtors.vendasback.model.Produto;
-import io.github.andtors.vendasback.model.exception.ValidationException;
 import io.github.andtors.vendasback.model.repository.ProdutoRepository;
-import io.github.andtors.vendasback.model.service.ProdutoService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +19,6 @@ public class ProdutoController {
 
     @Autowired
     private ProdutoRepository produtoRepository;
-
-    private  ProdutoService produtoService;
 
     @PostMapping
     public ProdutoFormRequest salvar( @RequestBody ProdutoFormRequest produto ){
@@ -48,10 +44,10 @@ public class ProdutoController {
 
         entidade.setId(id);
 
+        entidade.prePersist();
+
         produtoRepository.save(entidade);
 
         return ResponseEntity.ok().build();
-
-
     }
 }

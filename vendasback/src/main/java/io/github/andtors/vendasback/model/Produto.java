@@ -36,6 +36,10 @@ public class Produto {
 
     @PrePersist
     public void prePersist(){
-        setDataCadastro(LocalDate.now());
+        if(getDataCadastro() == null){
+            setDataCadastro(LocalDate.now());
+        } else {
+            setDataCadastro(getDataCadastro());
+        }
     }
 }
