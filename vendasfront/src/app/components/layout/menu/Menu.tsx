@@ -8,8 +8,9 @@ export const Menu = () => {
         </p>
         <ul className="menu-list">
             <MenuItem href="/" label="Home"/>
-            <MenuItem href="/cadastros/produtos" label="Produtos"/>
+            <MenuItem href="/consultas/produtos" label="Produtos"/>
             <MenuItem href="/" label="Config"/>
+            <MenuItem href="/" label="Sair"/>
         </ul>
     </aside>
   )
