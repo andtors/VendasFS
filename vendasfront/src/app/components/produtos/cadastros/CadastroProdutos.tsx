@@ -1,13 +1,14 @@
 'use client'
 
-import { Layout, Input, Message } from '@/app/components'
-import { useState } from 'react'
+import { Layout, Input } from '@/app/components'
+import { useEffect, useState } from 'react'
 import { useProdutoService } from '../../../api/services/index'
 import { IProduto } from '../../../api/models/produtos/IProduto'
-import { converterEmBigDecimal } from '@/app/api/util/money'
+import { converterEmBigDecimal, formatReal } from '@/app/api/util/money'
 import { Alert } from '../../common/message/Message'
 import * as yup from 'yup'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 const msgCampoObrigatorio = "Campo Obrigatório"
 
@@ -28,53 +29,67 @@ interface FormErros {
 export const CadastroProdutos = () => {
 
   const service = useProdutoService()
-  const [sku, setSku] = useState<string>("")
-  const [preco, setPreco] = useState<string>("")
-  const [nome, setNome] = useState<string>("")
-  const [descricao, setDescricao] = useState<string>("")
+  const [sku, setSku] = useState<string | undefined>("")
+  const [preco, setPreco] = useState<string | undefined>("")
+  const [nome, setNome] = useState<string | undefined>("")
+  const [descricao, setDescricao] = useState<string | undefined>("")
   const [id, setId] = useState<string | undefined>("")
   const [cadastro, setCadastro] = useState<string | undefined>("")
   const [messages, setMessages] = useState<Array<Alert>>([])
   const [errors, setErrors] = useState<FormErros>({})
+  const searchParams = useSearchParams()
+  const queryId = searchParams.get('id')
 
+  useEffect(() => {
+
+    if(queryId){
+      service.carregarProduto(queryId).then(produtoEncontrado => {
+        setId(produtoEncontrado.id)
+        setSku(produtoEncontrado.sku)
+        setNome(produtoEncontrado.nome)
+        setCadastro(produtoEncontrado.cadastro)
+        setDescricao(produtoEncontrado.descricao)
+        setPreco(formatReal(`${produtoEncontrado.preco}`))
+      })
+    }
+
+  }, [queryId])
+  
   function submit() {
     const produto: IProduto = {
       sku, preco: converterEmBigDecimal(preco), nome, descricao, id
     }
 
     validationSchema.validate(produto)
-    .then(obj => {
-
-      setErrors({})
-
-      if (id) {
-        service.
-          atualizar(produto)
-          .then(response => {
-            setMessages([{
-              tipo: "success", texto:"Produto atualizado com sucesso!"
-            }])
-          })
-      } else {
-        service
-          .salvar(produto)
-          .then(produtoResposta => {
-            setId(produtoResposta.id)
-            setCadastro(produtoResposta.cadastro)
-            setMessages([{
-              tipo: "success", texto: "Produto salvo com sucesso!"
-            }])
-          })
-      }
-    })  
-    .catch(err => {
-      const field = err.path
-      const message = err.message
-
-      setErrors({
-        [field]: message
+      .then(obj => {
+        setErrors({})
+        if(id) {
+          service.
+            atualizar(produto)
+            .then(response => {
+              setMessages([{
+                tipo: "success", texto: "Produto atualizado com sucesso!"
+              }])
+            })
+        } else {
+          service
+            .salvar(produto)
+            .then(produtoResposta => {
+              setId(produtoResposta.id)
+              setCadastro(produtoResposta.cadastro)
+              setMessages([{
+                tipo: "success", texto: "Produto salvo com sucesso!"
+              }])
+            })
+        }
       })
-    })
+      .catch(err => {
+        const field = err.path
+        const message = err.message
+        setErrors({
+          [field]: message
+        })
+      })
   }
 
   return (
@@ -87,14 +102,12 @@ export const CadastroProdutos = () => {
             columnClasses='is-half'
             ForAndId='inputId'
             disabled={true}
-
           />
           <Input label='Data cadastro:'
             value={cadastro}
             columnClasses='is-half'
             ForAndId='inputDataCadastro'
             disabled={true}
-            
           />
         </div>
       }
@@ -106,7 +119,7 @@ export const CadastroProdutos = () => {
           onChange={setSku}
           placeholder='Digite o código SKU do produto'
           error={errors.sku}
-          />
+        />
         <Input label='Preço: *'
           value={preco}
           columnClasses='is-half'
@@ -125,9 +138,9 @@ export const CadastroProdutos = () => {
           columnClasses='is-full'
           ForAndId='Nome'
           onChange={setNome}
-          placeholder='Digite o nome do produto' 
+          placeholder='Digite o nome do produto'
           error={errors.nome}
-          />
+        />
 
       </div>
       <div className="columns">
@@ -140,7 +153,7 @@ export const CadastroProdutos = () => {
               onChange={(e) => setDescricao(e.target.value)}
               placeholder="Digite a descrição do produto">
             </textarea>
-            { errors.descricao &&
+            {errors.descricao &&
               <p className='help is-danger'>{errors.descricao}</p>
             }
           </div>
@@ -155,9 +168,9 @@ export const CadastroProdutos = () => {
         </div>
         <div className='control'>
           <Link href='/consultas/produtos'>
-          <button className='button is-link is-light'>
-            Voltar
-          </button>
+            <button className='button is-link is-light'>
+              Voltar
+            </button>
           </Link>
         </div>
       </div>

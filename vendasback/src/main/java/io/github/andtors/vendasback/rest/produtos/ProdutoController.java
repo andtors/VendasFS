@@ -60,4 +60,30 @@ public class ProdutoController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity getById(@PathVariable("id") Long id) {
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
+
+        if(produtoExistente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        var produto = produtoExistente.map(ProdutoFormRequest::fromModel).get();
+
+        return ResponseEntity.ok(produto);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void>deletar(@PathVariable("id") Long id){
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
+
+        if(produtoExistente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        produtoRepository.delete(produtoExistente.get());
+        return ResponseEntity.noContent().build();
+    }
+
 }
