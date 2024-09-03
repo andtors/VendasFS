@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import 'bulma/css/versions/bulma-no-dark-mode.css'
+import './components/common/loader/loader.css'
 
 const inter = Inter({ subsets: ["latin"] });
 
