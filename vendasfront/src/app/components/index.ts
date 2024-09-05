@@ -4,3 +4,4 @@ export { Input } from "./common/input/Input"
 export { Message } from './common/message/Message'
 export { Listagem } from './produtos/listagem/Listagem'
 export { Loader } from './common/loader/Loader'
+export { CadastroClientes } from './clientes/cadastro/CadastroClientes'
