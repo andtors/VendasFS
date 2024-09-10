@@ -1,11 +1,23 @@
+'use client'
+
+import { useState } from "react";
 import { Layout } from "../../layout/Layout"
+import { ClienteForm } from "./Form"
+import { ICliente } from "@/app/api/models/clientes/IClientes";
 
-type Props = {}
 
-export const CadastroClientes: React.FC = (props: Props) => {
+export const CadastroClientes: React.FC = () => {
+
+  const [cliente, setCliente] = useState<ICliente>({
+    
+  });
+
+  const handleSubmit = (cliente: ICliente) => {
+    console.log(cliente)
+  }
   return (
     <Layout titulo="Clientes">
-      Cadastro
+      <ClienteForm cliente={cliente} onSubmit={handleSubmit}/>
     </Layout>
   )
 }
