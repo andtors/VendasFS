@@ -1,48 +1,43 @@
 import { formatReal } from "@/app/api/util/money";
-import { ChangeEvent } from "react";
+import { ChangeEvent, InputHTMLAttributes } from "react";
 
-interface InputProps {
-    onChange?: (value: string) => void;
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    id: string;
     label: string;
     columnClasses?: string;
-    ForAndId: string;
-    value: string | undefined;
-    placeholder?: string;
-    disabled?: boolean;
-    currency?: boolean;
-    maxChar?: number;
     error?: string;
+    formatter?: (value: string) => string;
+    currency?: boolean;
+    
 }
 
-export const Input: React.FC<InputProps> = ({ onChange, label, columnClasses, ForAndId, value, placeholder, disabled, currency, maxChar, error  }: InputProps) => {
-    
+export const Input: React.FC<InputProps> = ({
+    label,
+    columnClasses,
+    id,
+    error,
+    currency,
+    ...inputProps
+}: InputProps) => {
+
     const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-            let value = e.target.value
+        let value = e.target.value
 
-            if(value && currency){
-                value = formatReal(value)
-            }
+        if(value && currency){
+            value = formatReal(value)
+        }
+}
 
-            if (onChange) {
-                onChange(value)
-            }
-    }
-    
     return (
-        <div className={`field column ${columnClasses}`}>
-            <label className='label' htmlFor={`input${ForAndId}`}>{label}</label>
-            <div className="control"></div>
-                <input className='input'
-                    id={`input${ForAndId}`}
-                    value={value}
-                    onChange={onInputChange}
-                    placeholder={placeholder}
-                    disabled = {disabled}
-                    maxLength={maxChar}
-                     />
-                     {error &&
-                        <p className="help is-danger">{error}</p>   
-                    }
+        <div className={`field column ${columnClasses}` }>
+            <label className="label" htmlFor={id}>{label}</label>
+            <div className="control">
+                <input className="input" 
+                    id={id} {...inputProps} />
+                {error &&
+                    <p className="help is-danger">{ error }</p>
+                }
             </div>
+        </div>
     )
 }

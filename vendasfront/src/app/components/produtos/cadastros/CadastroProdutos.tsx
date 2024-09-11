@@ -49,7 +49,7 @@ export const CadastroProdutos = () => {
         setNome(produtoEncontrado.nome)
         setCadastro(produtoEncontrado.cadastro)
         setDescricao(produtoEncontrado.descricao)
-        setPreco(formatReal(`${produtoEncontrado.preco}`))
+
       })
     }
 
@@ -94,87 +94,86 @@ export const CadastroProdutos = () => {
 
   return (
 
-    <Layout titulo='Cadastro de produtos' mensagens={messages}>
-      {id &&
+    <Layout titulo="Produtos" mensagens={messages}>
+    {id &&
         <div className="columns">
-          <Input label='Código:'
-            value={id}
-            columnClasses='is-half'
-            ForAndId='inputId'
-            disabled={true}
-          />
-          <Input label='Data cadastro:'
-            value={cadastro}
-            columnClasses='is-half'
-            ForAndId='inputDataCadastro'
-            disabled={true}
-          />
+            <Input label="Código:" 
+                columnClasses="is-half" 
+                value={id}
+                id="inputId"
+                disabled={true}
+                />
+
+            <Input label="Data Cadastro:" 
+                columnClasses="is-half" 
+                value={cadastro}
+                id="inputDataCadastro"
+                disabled
+                />
         </div>
-      }
-      <div className="columns">
-        <Input label='SKU: *'
-          value={sku}
-          columnClasses='is-half'
-          ForAndId='Sku'
-          onChange={setSku}
-          placeholder='Digite o código SKU do produto'
-          error={errors.sku}
-        />
-        <Input label='Preço: *'
-          value={preco}
-          columnClasses='is-half'
-          ForAndId='Preco'
-          onChange={setPreco}
-          placeholder='Digite o preço do produto'
-          currency
-          maxChar={16}
-          error={errors.preco}
-        />
+    }
 
-      </div>
-      <div className="columns">
-        <Input label='Nome: *'
-          value={nome}
-          columnClasses='is-full'
-          ForAndId='Nome'
-          onChange={setNome}
-          placeholder='Digite o nome do produto'
-          error={errors.nome}
-        />
+    <div className="columns">
+        <Input label="SKU: *" 
+               columnClasses="is-half" 
+               onChange={ e => setSku(e.target.value)}
+               value={sku}
+               id="inputSku"
+               placeholder="Digite o SKU do produto" 
+               error={errors.sku}
+               />
 
-      </div>
-      <div className="columns">
-        <div className='field is-full column'>
-          <label className='label' htmlFor='inputDesc'>Descrição: *</label>
-          <div className="control">
-            <textarea className='textarea'
-              id="inputDesc"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              placeholder="Digite a descrição do produto">
-            </textarea>
+        <Input label="Preço: *" 
+               columnClasses="is-half" 
+               onChange={e => setPreco(e.target.value)}
+               value={preco}
+               id="inputPreco"
+               placeholder="Digite o Preço do produto" 
+               maxLength={16}
+               error={errors.preco}
+               />
+   </div>
+
+   <div className="columns">
+        <Input label="Nome: *" 
+               columnClasses="is-full" 
+               onChange={e => setNome(e.target.value)}
+               value={nome}
+               id="inputNome"
+               placeholder="Digite o Nome do produto"
+               error={errors.nome}
+            />
+   </div>
+
+   <div className="columns">
+    <div className="field column is-full">
+        <label className="label" htmlFor="inputDesc">Descrição: *</label>
+        <div className="control">
+            <textarea className="textarea" 
+                id="inputDesc" value={descricao}
+                onChange={ event => setDescricao(event.target.value) }
+                placeholder="Digite a Descrição detalhada do produto" />
             {errors.descricao &&
-              <p className='help is-danger'>{errors.descricao}</p>
+                <p className="help is-danger">{errors.descricao}</p>
             }
-          </div>
         </div>
-      </div>
+    </div>
+   </div>
 
-      <div className='field is-grouped'>
-        <div className='control'>
-          <button className='button is-link' onClick={submit}>
-            {id ? "Atualizar" : "Salvar"}
-          </button>
-        </div>
-        <div className='control'>
-          <Link href='/consultas/produtos'>
-            <button className='button is-link is-light'>
-              Voltar
+   <div className="field is-grouped">
+        <div className="control is-link">
+            <button onClick={submit} className="button is-success">
+                { id ? "Atualizar" : "Salvar" }                        
             </button>
-          </Link>
         </div>
-      </div>
-    </Layout>
+        <div className="control">
+            <Link href="/consultas/produtos">
+                <button className="button">Voltar</button>
+            </Link>
+        </div>
+   </div>
+
+</Layout>
   )
 }
 
