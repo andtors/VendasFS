@@ -1,6 +1,6 @@
 import { ICliente } from "@/app/api/models/clientes/IClientes"
 import { useFormik } from 'formik'
-import { Input } from "../../common/input/Input";
+import { Input, InputCPF, InputTelefone, InputDate } from "../../common/input/Input";
 import { useState } from "react";
 
 
@@ -54,6 +54,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
            <div className="columns">
                <Input id="nome" 
                       name="nome"
+                      placeholder="Digite seu nome"
                       label="Nome: *"
                       autoComplete="off" 
                       columnClasses="is-full"
@@ -63,8 +64,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
                       />
            </div>   
            <div className="columns">
-               <Input id="cpf" 
+               <InputCPF id="cpf" 
                       name="cpf"
+                      placeholder="Digite seu CPF"
                       label="CPF: *"
                       autoComplete="off" 
                       columnClasses="is-half"
@@ -73,8 +75,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
                       error={formik.errors.cpf}
                       />
 
-                <Input id="dataNascimento" 
+                <InputDate id="dataNascimento" 
                       name="dataNascimento"
+                      placeholder="Digite sua data de nascimento"
                       label="Data Nascimento: *"
                       autoComplete="off" 
                       columnClasses="is-half"
@@ -86,6 +89,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
            <div className="columns">
                <Input id="endereco" 
                       name="endereco"
+                      placeholder="Digite seu endereço"
                       label="Endereço: *"
                       autoComplete="off" 
                       columnClasses="is-full"
@@ -96,6 +100,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
            <div className="columns">
                <Input id="email" 
                       name="email"
+                      placeholder="Digite seu e-mail"
                       label="Email: *"
                       autoComplete="off" 
                       columnClasses="is-half"
@@ -103,8 +108,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) =
                       error={formik.errors.email}
                       value={formik.values.email} />
 
-                <Input id="telefone" 
+                <InputTelefone id="telefone" 
                       name="telefone"
+                      placeholder="Digite seu telefone"
                       label="Telefone: *"
                       autoComplete="off" 
                       columnClasses="is-half"

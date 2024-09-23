@@ -1,6 +1,6 @@
 'use client'
 
-import { Layout, Input } from '@/app/components'
+import { Layout, Input, InputMoney} from '@/app/components'
 import { useEffect, useState } from 'react'
 import { useProdutoService } from '../../../api/services/index'
 import { IProduto } from '../../../api/models/produtos/IProduto'
@@ -49,6 +49,7 @@ export const CadastroProdutos = () => {
         setNome(produtoEncontrado.nome)
         setCadastro(produtoEncontrado.cadastro)
         setDescricao(produtoEncontrado.descricao)
+        setPreco(String(produtoEncontrado.preco))
 
       })
     }
@@ -123,7 +124,7 @@ export const CadastroProdutos = () => {
                error={errors.sku}
                />
 
-        <Input label="Preço: *" 
+        <InputMoney label="Preço: *" 
                columnClasses="is-half" 
                onChange={e => setPreco(e.target.value)}
                value={preco}
