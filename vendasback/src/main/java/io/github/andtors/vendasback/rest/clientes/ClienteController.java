@@ -26,7 +26,7 @@ public class ClienteController {
         return ResponseEntity.ok(ClienteFormRequest.fromModel(cliente));
     }
 
-    @PostMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Void> atualizar(@PathVariable("id") Long id, @RequestBody ClienteFormRequest request){
 
         Optional<Cliente> clienteExistente = clienteRepository.findById(id);

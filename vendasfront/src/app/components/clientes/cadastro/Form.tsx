@@ -2,7 +2,7 @@ import { ICliente } from "@/app/api/models/clientes/IClientes"
 import { useFormik } from 'formik'
 import { Input, InputCPF, InputTelefone, InputDate } from "../../common/input/Input";
 import { useState } from "react";
-
+import * as Yup from 'yup'
 
 interface ClienteFormProps {
     cliente: ICliente;
@@ -21,15 +21,30 @@ const formScheme: ICliente = {
     telefone: ''
 }
 
-export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) => {
+const campoObrigatorioMensagem = "Campo obrigatório"
+const campoObrigatorioValidation = Yup.string().trim().required(campoObrigatorioMensagem)
 
-    const [nome, setNome] = useState("")
+const validationSchema = Yup.object().shape({
+    cpf: 
+    Yup.string().trim().required(campoObrigatorioMensagem).length(14, 'CPF Inválido!'),
+    dataNascimento:
+    Yup.string().trim().required(campoObrigatorioMensagem).length(10, 'Data Inválida!'),
+    email:
+    Yup.string().trim().required('Campo obrigatório').email('E-mail inválido!'),
+    endereco: campoObrigatorioValidation,
+    nome: campoObrigatorioValidation,
+    telefone: campoObrigatorioValidation
+})
+
+export const ClienteForm: React.FC<ClienteFormProps> = ({ cliente, onSubmit }) => {
 
     const formik = useFormik<ICliente>({
         initialValues: { ...formScheme, ...cliente },
-        onSubmit
+        onSubmit,
+        enableReinitialize: true,
+        validationSchema: validationSchema
     })
-
+    
     return (
         <form onSubmit={formik.handleSubmit}>
             {formik.values.id &&
