@@ -14,8 +14,10 @@
     "bulma": "^1.0.2",
     "formik": "^2.4.6",
     "next": "14.2.5",
+    "primereact": "^6.4.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-transition-group": "^4.4.2",
     "swr": "^2.2.5",
     "yup": "^1.4.0"
   },

@@ -50,7 +50,6 @@ export const CadastroProdutos = () => {
         setCadastro(produtoEncontrado.cadastro)
         setDescricao(produtoEncontrado.descricao)
         setPreco(String(produtoEncontrado.preco))
-
       })
     }
 

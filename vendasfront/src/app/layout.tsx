@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import 'primereact/resources/primereact.min.css'
+import 'primereact/resources/themes/mdc-light-indigo/theme.css'
 import 'bulma/css/versions/bulma-no-dark-mode.css'
 import './components/common/loader/loader.css'
 
@@ -18,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+        <body className={inter.className}>{children}</body>
     </html>
   );
 }

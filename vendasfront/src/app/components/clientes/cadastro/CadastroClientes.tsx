@@ -7,7 +7,6 @@ import { ICliente } from "@/app/api/models/clientes/IClientes";
 import { useClienteService } from "@/app/api/services/cliente.service";
 import { Alert } from "../../common/message/Message";
 
-
 export const CadastroClientes: React.FC = () => {
 
   const [cliente, setCliente] = useState<ICliente>({})
