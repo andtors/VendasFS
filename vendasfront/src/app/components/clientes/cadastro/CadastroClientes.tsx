@@ -1,17 +1,27 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "../../layout/Layout"
 import { ClienteForm } from "./Form"
 import { ICliente } from "@/app/api/models/clientes/IClientes";
 import { useClienteService } from "@/app/api/services/cliente.service";
 import { Alert } from "../../common/message/Message";
+import { useSearchParams } from 'next/navigation'
 
 export const CadastroClientes: React.FC = () => {
 
   const [cliente, setCliente] = useState<ICliente>({})
   const [messages, setMessages] = useState<Array<Alert>>([])
   const service = useClienteService()
+  const searchParams = useSearchParams()
+  const queryId = searchParams.get('id')
+
+  useEffect(() => {
+    if(queryId){
+      service.carregarCliente(queryId)
+      .then(clienteEncontrado => setCliente(clienteEncontrado))
+    }
+  }, [queryId])
 
   const handleSubmit = (cliente: ICliente) => {
     if (cliente.id) {

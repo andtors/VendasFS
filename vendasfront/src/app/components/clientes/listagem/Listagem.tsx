@@ -9,6 +9,9 @@ import { useState } from "react"
 import { Column } from 'primereact/column'
 import { IPage } from "@/app/api/models/common/IPage"
 import { useClienteService } from "@/app/api/services"
+import { Button } from 'primereact/button'
+import { confirmDialog } from 'primereact/confirmdialog'
+import Link from "next/link"
 
 interface ConsultaClientesForm {
     nome?: string;
@@ -49,7 +52,38 @@ export const ListagemClientes: React.FC = () => {
                 })
             })
             .finally(() => setLoading(false))
-        
+
+    }
+
+    const deletar = (cliente: ICliente) => {
+        service.deletar(cliente.id)
+        .then(result => {
+            handlePage(null)
+        })
+    }
+
+    const actionTemplate = (registro: ICliente) => {
+        return (
+            <div>
+                <Link href={`/cadastros/clientes?id=${registro.id}`}>
+                    <Button label="Editar"
+                        className="p-button-rounded p-button-info"
+                    />
+                </Link>
+                
+                <Button label="Deletar"
+                    className="p-button-rounded p-button-danger" 
+                    onClick={ e => confirmDialog({
+                        message: "Confirma a exclusão desse usuário?",
+                        acceptLabel:"Sim",
+                        rejectLabel:"Não",
+                        accept() {
+                            deletar(registro)
+                        },
+                        header:"Confirmação"
+                    })}/>
+            </div>
+        )
     }
 
     return (
@@ -78,25 +112,31 @@ export const ListagemClientes: React.FC = () => {
                             Consultar
                         </button>
                     </div>
+                    <Link href='/cadastros/clientes'>
+                    <Button label="Novo"
+                        className="p-button p-button-warning"
+                    />
+                </Link>
                 </div>
             </form>
             <br />
             <div className="columns">
                 <div className="is-full">
-                    <DataTable 
-                    value={clientes.content} 
-                    totalRecords={clientes.totalElements} 
-                    lazy paginator 
-                    first={clientes.first} 
-                    rows={clientes.size} 
-                    onPage={handlePage}
-                    loading={loading}
-                    emptyMessage="Nenhum registro encontrado."
+                    <DataTable
+                        value={clientes.content}
+                        totalRecords={clientes.totalElements}
+                        lazy paginator
+                        first={clientes.first}
+                        rows={clientes.size}
+                        onPage={handlePage}
+                        loading={loading}
+                        emptyMessage="Nenhum registro encontrado."
                     >
-                        <Column field="id" header="Código"/>
-                        <Column field="nome" header="Nome"/>
-                        <Column field="cpf" header="CPF"/>
-                        <Column field="email" header="E-mail"/>
+                        <Column field="id" header="Código" />
+                        <Column field="nome" header="Nome" />
+                        <Column field="cpf" header="CPF" />
+                        <Column field="email" header="E-mail" />
+                        <Column body={actionTemplate} />
                     </DataTable>
                 </div>
             </div>
