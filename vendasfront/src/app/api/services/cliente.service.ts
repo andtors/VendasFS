@@ -1,6 +1,7 @@
 import {httpClient} from '@/app/api/http/index'
 import {ICliente} from '@/app/api/models/clientes/IClientes'
 import { Axios, AxiosResponse } from 'axios'
+import { IPage } from '../models/common/IPage'
 
 const resourcedURL: string = '/api/clientes'
 
@@ -31,10 +32,17 @@ export const useClienteService = () => {
         await httpClient.delete(url)
     }
 
+    const find = async (nome: string = '', cpf: string = '', page: number = 0, size: number = 10) : Promise<IPage<ICliente>> => {
+            const url = `${resourcedURL}?nome=${nome}&cpf=${cpf}&page=${page}&size=${size}`
+            const response: AxiosResponse<IPage<ICliente>> = await httpClient.get(url)
+            return response.data
+    }
+
     return {
         salvar,
         atualizar,
         carregarCliente,
-        deletar
+        deletar,
+        find
     }
 }
