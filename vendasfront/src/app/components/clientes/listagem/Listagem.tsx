@@ -67,10 +67,13 @@ export const ListagemClientes: React.FC = () => {
             <div>
                 <Link href={`/cadastros/clientes?id=${registro.id}`}>
                     <Button label="Editar"
-                        className="p-button-rounded p-button-info"
+                        className="p-button-rounded p-button-info mr-2"
                     />
+                
                 </Link>
                 
+
+
                 <Button label="Deletar"
                     className="p-button-rounded p-button-danger" 
                     onClick={ e => confirmDialog({
@@ -136,7 +139,7 @@ export const ListagemClientes: React.FC = () => {
                         <Column field="nome" header="Nome" />
                         <Column field="cpf" header="CPF" />
                         <Column field="email" header="E-mail" />
-                        <Column body={actionTemplate} />
+                        <Column header="Ações" body={actionTemplate} />
                     </DataTable>
                 </div>
             </div>

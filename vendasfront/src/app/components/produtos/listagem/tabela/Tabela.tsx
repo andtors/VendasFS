@@ -20,7 +20,7 @@ export const Tabela: React.FC<TabelaProdutoProps> = ({ produtos, onEdit, onDelet
             <div>
                 <Link href={`/cadastros/produtos?id=${registro.id}`}>
                     <Button label="Editar"
-                        className="p-button-rounded p-button-info"
+                        className="p-button-rounded p-button-info mr-2"
                     />
                 </Link>
     
@@ -46,7 +46,7 @@ export const Tabela: React.FC<TabelaProdutoProps> = ({ produtos, onEdit, onDelet
             <Column field="sku" header="SKU" />
             <Column field="nome" header="Nome" />
             <Column field="preco" header="Preço" />
-            <Column header="" body={actionTemplate}/>
+            <Column header="Ações" body={actionTemplate}/>
         </DataTable>
     )
 }
