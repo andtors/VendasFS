@@ -14,6 +14,7 @@
     "bulma": "^1.0.2",
     "formik": "^2.4.6",
     "next": "14.2.5",
+    "primeflex": "^2.0.0",
     "primeicons": "^7.0.0",
     "primereact": "^6.4.0",
     "react": "^18",

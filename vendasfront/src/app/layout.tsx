@@ -6,6 +6,7 @@ import 'primereact/resources/themes/mdc-light-indigo/theme.css'
 import 'bulma/css/versions/bulma-no-dark-mode.css'
 import './components/common/loader/loader.css'
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css'
 
 
 const inter = Inter({ subsets: ["latin"] });
