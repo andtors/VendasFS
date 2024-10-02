@@ -4,9 +4,10 @@ import { IVendas } from "@/app/api/models/vendas/IVendas"
 import { useFormik } from "formik"
 import { AutoComplete, AutoCompleteChangeParams, AutoCompleteCompleteMethodParams } from 'primereact/autocomplete'
 import { useState } from "react"
-import { useClienteService } from "@/app/api/services"
+import { useClienteService, useProdutoService } from "@/app/api/services"
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
+import { IProduto } from "@/app/api/models/produtos/IProduto"
 
 interface VendaFormProps {
     onSubmit: (venda: IVendas) => void
@@ -24,7 +25,9 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 }) => {
 
     const service = useClienteService()
+    const produtoService = useProdutoService()
     const [codigoProduto, setCodigoProduto] = useState<string>('')
+    const [produto, setProduto] = useState<IProduto>(null)
     const [listaClientes, setListaClientes] = useState<IPage<ICliente>>({
         content: [],
         first: 0,
@@ -51,9 +54,17 @@ export const VendasForm: React.FC<VendaFormProps> = ({
     }
 
     const handleCodigoProdutoSelect = (e) => {
-        console.log(codigoProduto)
+        produtoService.carregarProduto(codigoProduto)
+            .then(produtoEncontrado => setProduto(produtoEncontrado))
+            .catch(error => console.log(error))
     }
 
+    const handleAddProduto = () => {
+        const produtosJaAdicionados = formik.values.produtos
+        produtosJaAdicionados?.push(produto)
+        setProduto(null)
+        setCodigoProduto('')
+    }
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="p-fluid">
@@ -82,7 +93,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                         </span>
                     </div>
                     <div className="p-col-6">
-                        <AutoComplete />
+                        <AutoComplete value={produto} field="nome"/>
                     </div>
                     <div className="p-col-2">
                     <span className="p-float-label">
@@ -91,7 +102,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                     </span>
                     </div>
                     <div className="p-col-2">
-                       <Button  label="Adicionar"/>
+                       <Button  label="Adicionar" onClick={handleAddProduto}/>
                     </div>
                 </div>
 
