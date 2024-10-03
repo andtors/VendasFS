@@ -3,7 +3,12 @@ import { IProduto } from "../produtos/IProduto";
 
 export interface IVendas {
     cliente?: ICliente
-    produtos?: Array<IProduto>
+    itens?: Array<IItemVenda>
     formaPagamento?: string
     total: number
+}
+
+export interface IItemVenda{
+    produto?: IProduto
+    quantidade: number | undefined
 }
