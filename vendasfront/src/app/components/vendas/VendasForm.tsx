@@ -1,6 +1,6 @@
 import { ICliente } from "@/app/api/models/clientes/IClientes"
 import { IPage } from "@/app/api/models/common/IPage"
-import { IVendas } from "@/app/api/models/vendas/IVendas"
+import { IItemVenda, IVendas } from "@/app/api/models/vendas/IVendas"
 import { useFormik } from "formik"
 import { AutoComplete, AutoCompleteChangeParams, AutoCompleteCompleteMethodParams } from 'primereact/autocomplete'
 import { useState } from "react"
@@ -73,10 +73,26 @@ export const VendasForm: React.FC<VendaFormProps> = ({
     const handleAddProduto = () => {
 
         const itensAdicionados = formik.values.itens
-        itensAdicionados?.push({
-            produto: produto,
-            quantidade: quantidadeProduto
+
+        const jaExisteOItemNaVenda = itensAdicionados?.some((iv: IItemVenda) => {
+            return iv.produto.id === produto.id
         })
+
+        if(jaExisteOItemNaVenda){
+
+            itensAdicionados?.forEach((iv : IItemVenda ) => {
+                if(iv.produto.id === produto.id){
+                    iv.quantidade = iv.quantidade + quantidadeProduto
+                }
+            })
+        } else {
+            itensAdicionados?.push({
+                produto: produto,
+                quantidade: quantidadeProduto
+            })
+        }
+
+       
         setProdutosArray(true)
         setProduto(null)
         setCodigoProduto('')
@@ -147,8 +163,15 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                         <Column field="produto.id" header="Código"/>
                         <Column field="produto.sku" header="SKU"/>
                         <Column field="produto.nome" header="Produto"/>
-                        <Column field="produto.preco" header="UND"/>
+                        <Column field="produto.preco" header="Preço Unitário"/>
                         <Column field="quantidade" header="QTD"/>
+                        <Column header="Total" body={(iv : IItemVenda ) => {
+                            return (
+                                <div>
+                                    { iv.produto.preco * iv.quantidade}
+                                </div>
+                            )
+                        }}/>
                     </DataTable>
                 </div>
                 </div>
