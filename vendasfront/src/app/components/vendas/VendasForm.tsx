@@ -11,6 +11,7 @@ import { IProduto } from "@/app/api/models/produtos/IProduto"
 import { Dialog } from "primereact/dialog"
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
+import { Dropdown } from "primereact/dropdown"
 
 interface VendaFormProps {
     onSubmit: (venda: IVendas) => void
@@ -27,6 +28,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
     onSubmit
 }) => {
 
+    const formasPagamento: String[] = ["DINHEIRO", "CARTÃO"]
     const service = useClienteService()
     const produtoService = useProdutoService()
     const [listaProdutos, setListaProdutos] = useState<IProduto[]>([])
@@ -62,14 +64,14 @@ export const VendasForm: React.FC<VendaFormProps> = ({
     }
 
     const handleCodigoProdutoSelect = (e) => {
-        if(codigoProduto){
+        if (codigoProduto) {
             produtoService.carregarProduto(codigoProduto)
-            .then(produtoEncontrado => setProduto(produtoEncontrado))
-            .catch(error => {
-                setMensagem("Produto não encontrado!")
-            })
-        } 
-       
+                .then(produtoEncontrado => setProduto(produtoEncontrado))
+                .catch(error => {
+                    setMensagem("Produto não encontrado!")
+                })
+        }
+
     }
 
     const handleAddProduto = () => {
@@ -80,10 +82,10 @@ export const VendasForm: React.FC<VendaFormProps> = ({
             return iv.produto.id === produto.id
         })
 
-        if(jaExisteOItemNaVenda){
+        if (jaExisteOItemNaVenda) {
 
-            itensAdicionados?.forEach((iv : IItemVenda ) => {
-                if(iv.produto.id === produto.id){
+            itensAdicionados?.forEach((iv: IItemVenda) => {
+                if (iv.produto.id === produto.id) {
                     iv.quantidade = iv.quantidade + quantidadeProduto
                 }
             })
@@ -94,12 +96,15 @@ export const VendasForm: React.FC<VendaFormProps> = ({
             })
         }
 
-       
+
         setProdutosArray(true)
         setProduto(null)
         setCodigoProduto('')
         setQuantidadeProduto(0)
-        
+
+        const total = totalVenda()
+        formik.setFieldValue("total", total)
+        console.log(total)
     }
 
     const dialogMensagemFooter = () => {
@@ -121,16 +126,28 @@ export const VendasForm: React.FC<VendaFormProps> = ({
     }
 
     const handleProdutoAutocomplete = async (e: AutoCompleteCompleteMethodParams) => {
-        if(!listaProdutos.length){
+        if (!listaProdutos.length) {
             const produtosEncontrados = await produtoService.listar()
             setListaProdutos(produtosEncontrados)
         }
 
         const produtosEncotrados = listaProdutos.filter((produto: IProduto) => {
-           return produto.nome?.toUpperCase().includes(e.query.toUpperCase())
+            return produto.nome?.toUpperCase().includes(e.query.toUpperCase())
         })
 
         setListaFiltradaProdutos(produtosEncotrados)
+    }
+
+    const totalVenda = () => {
+
+        const totais: number[] = formik.values.itens?.map(iv => iv.quantidade * iv.produto.preco)
+
+        console.log(totais)
+        if(totais.length){
+            return totais.reduce((somatoriaAtual = 0, valorItemAtual) => somatoriaAtual + valorItemAtual)
+        } else {
+            return 0 
+        } 
     }
 
     return (
@@ -161,39 +178,63 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                         </span>
                     </div>
                     <div className="p-col-6">
-                        <AutoComplete 
-                        completeMethod={handleProdutoAutocomplete}
-                        id="produto"
-                        name="produto"
-                        onChange={e => setProduto(e.value)}
-                        suggestions={listaFiltradaProdutos} value={produto} field="nome"/>
+                        <AutoComplete
+                            completeMethod={handleProdutoAutocomplete}
+                            id="produto"
+                            name="produto"
+                            onChange={e => setProduto(e.value)}
+                            suggestions={listaFiltradaProdutos} value={produto} field="nome" />
                     </div>
                     <div className="p-col-2">
-                    <span className="p-float-label">
-                        <InputText id="qtdProduto" value={quantidadeProduto} onChange={e => setQuantidadeProduto(parseInt(e.target.value))}/>
+                        <span className="p-float-label">
+                            <InputText id="qtdProduto" value={quantidadeProduto} onChange={e => setQuantidadeProduto(parseInt(e.target.value))} />
                             <label htmlFor="qtdProduto">QTD</label>
-                    </span>
+                        </span>
                     </div>
                     <div className="p-col-2">
-                       <Button disabled={disableAddProdutoButton()} type="button" label="Adicionar" onClick={handleAddProduto}/>
+                        <Button disabled={disableAddProdutoButton()} type="button" label="Adicionar" onClick={handleAddProduto} />
                     </div>
-            
-                <div className="p-col-12">
-                    <DataTable value={formik.values.itens}>
-                        <Column field="produto.id" header="Código"/>
-                        <Column field="produto.sku" header="SKU"/>
-                        <Column field="produto.nome" header="Produto"/>
-                        <Column field="produto.preco" header="Preço Unitário"/>
-                        <Column field="quantidade" header="QTD"/>
-                        <Column header="Total" body={(iv : IItemVenda ) => {
-                            return (
-                                <div>
-                                    { iv.produto.preco * iv.quantidade}
-                                </div>
-                            )
-                        }}/>
-                    </DataTable>
-                </div>
+
+                    <div className="p-col-12">
+                        <DataTable value={formik.values.itens} emptyMessage="Nenhum produto adicionado...">
+                            <Column field="produto.id" header="Código" />
+                            <Column field="produto.sku" header="SKU" />
+                            <Column field="produto.nome" header="Produto" />
+                            <Column field="produto.preco" header="Preço Unitário" />
+                            <Column field="quantidade" header="QTD" />
+                            <Column header="Total" body={(iv: IItemVenda) => {
+                                return (
+                                    <div>
+                                        {iv.produto.preco * iv.quantidade}
+                                    </div>
+                                )
+                            }} />
+                        </DataTable>
+                    </div>
+                    <div className="p-col-5">
+                        <div className="p-field">
+                            <label htmlFor="formaPagamento" >Forma de Pagamento: *</label>
+                            <Dropdown 
+                             id="formaPagamento" 
+                             options={formasPagamento}
+                             value={formik.values.formaPagamento} 
+                             onChange={e => formik.setFieldValue("formaPagamento", e.value)}
+                             placeholder="Selecione..."
+                             />
+                        </div>
+                    </div>
+                    <div className="p-col-2">
+                        <div className="p-field">
+                            <label htmlFor="itens">Itens:</label>
+                            <InputText disabled value={formik.values.itens?.length} />
+                        </div>
+                    </div>
+                    <div className="p-col-2">
+                        <div className="p-field">
+                            <label htmlFor="total">Total:</label>
+                            <InputText disabled value={formik.values.total} />
+                        </div>
+                    </div>
                 </div>
 
                 <Button disabled={!produtosArray} type="submit" label="Finalizar" />
@@ -202,6 +243,6 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                 {mensagem}
             </Dialog>
         </form>
-       
+
     )
 }
