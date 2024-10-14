@@ -12,6 +12,12 @@ import { Dialog } from "primereact/dialog"
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
 import { Dropdown } from "primereact/dropdown"
+import { validationScheme } from "./validationSchema"
+
+const formatadorMoney = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+})
 
 interface VendaFormProps {
     onSubmit: (venda: IVendas) => void
@@ -48,7 +54,8 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 
     const formik = useFormik<IVendas>({
         onSubmit,
-        initialValues: formScheme
+        initialValues: formScheme,
+        validationSchema: validationScheme
     })
 
     const handleClienteAutocomplete = (e: AutoCompleteCompleteMethodParams) => {
@@ -164,6 +171,9 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                         field="nome"
                         onChange={handleClienteChange}
                     />
+                    <small className="p-error p-d-block">
+                        {formik.errors.cliente}
+                    </small>
                 </div>
 
                 <div className="p-grid">
@@ -174,6 +184,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                                 value={codigoProduto}
                                 id="codigoProduto"
                                 onChange={e => setCodigoProduto(e.target.value)} />
+                                
                             <label htmlFor="codigoProduto">Código</label>
                         </span>
                     </div>
@@ -184,6 +195,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                             name="produto"
                             onChange={e => setProduto(e.value)}
                             suggestions={listaFiltradaProdutos} value={produto} field="nome" />
+                            
                     </div>
                     <div className="p-col-2">
                         <span className="p-float-label">
@@ -197,21 +209,39 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 
                     <div className="p-col-12">
                         <DataTable value={formik.values.itens} emptyMessage="Nenhum produto adicionado...">
+                            <Column body={ (item: IItemVenda ) => {
+
+                                const handleRemoverItem = () => {
+                                   const novaLista = formik.values.itens?.filter(iv => iv.produto.id != item.produto.id )
+
+                                   formik.setFieldValue("itens", novaLista)
+                                }
+
+
+                                return (
+                                    <Button label="Excluir" type="button" onClick={handleRemoverItem}/>
+                                )
+                            }} />
                             <Column field="produto.id" header="Código" />
                             <Column field="produto.sku" header="SKU" />
                             <Column field="produto.nome" header="Produto" />
                             <Column field="produto.preco" header="Preço Unitário" />
                             <Column field="quantidade" header="QTD" />
                             <Column header="Total" body={(iv: IItemVenda) => {
+                                const total = iv.produto.preco * iv.quantidade
+                                const totalFormatado = formatadorMoney.format(total)
                                 return (
                                     <div>
-                                        {iv.produto.preco * iv.quantidade}
+                                        {totalFormatado}
                                     </div>
                                 )
                             }} />
                         </DataTable>
+                        <small className="p-error p-d-block">
+                        {formik.touched && formik.errors.itens}
+                    </small>
                     </div>
-                    <div className="p-col-5">
+                    <div className="p-col-6">
                         <div className="p-field">
                             <label htmlFor="formaPagamento" >Forma de Pagamento: *</label>
                             <Dropdown 
@@ -221,18 +251,21 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                              onChange={e => formik.setFieldValue("formaPagamento", e.value)}
                              placeholder="Selecione..."
                              />
+                             <small className="p-error p-d-block">
+                        { formik.touched && formik.errors.formaPagamento}
+                    </small>
                         </div>
                     </div>
-                    <div className="p-col-2">
+                    <div className="p-col-3">
                         <div className="p-field">
                             <label htmlFor="itens">Itens:</label>
                             <InputText disabled value={formik.values.itens?.length} />
                         </div>
                     </div>
-                    <div className="p-col-2">
+                    <div className="p-col-3">
                         <div className="p-field">
                             <label htmlFor="total">Total:</label>
-                            <InputText disabled value={formik.values.total} />
+                            <InputText disabled value={formatadorMoney.format(formik.values.total)} />
                         </div>
                     </div>
                 </div>
