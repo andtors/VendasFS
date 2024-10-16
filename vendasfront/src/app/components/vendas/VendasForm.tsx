@@ -20,7 +20,9 @@ const formatadorMoney = new Intl.NumberFormat('pt-BR', {
 })
 
 interface VendaFormProps {
-    onSubmit: (venda: IVendas) => void
+    onSubmit: (venda: IVendas) => void;
+    vendaRealizada: boolean;
+    onNovaVenda: () => void;
 }
 
 const formScheme: IVendas = {
@@ -31,10 +33,12 @@ const formScheme: IVendas = {
 }
 
 export const VendasForm: React.FC<VendaFormProps> = ({
-    onSubmit
+    onSubmit,
+    vendaRealizada,
+    onNovaVenda
 }) => {
 
-    const formasPagamento: String[] = ["DINHEIRO", "CARTÃO"]
+    const formasPagamento: String[] = ["DINHEIRO", "CARTAO"]
     const service = useClienteService()
     const produtoService = useProdutoService()
     const [listaProdutos, setListaProdutos] = useState<IProduto[]>([])
@@ -111,7 +115,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 
         const total = totalVenda()
         formik.setFieldValue("total", total)
-        console.log(total)
+
     }
 
     const dialogMensagemFooter = () => {
@@ -149,13 +153,20 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 
         const totais: number[] = formik.values.itens?.map(iv => iv.quantidade * iv.produto.preco)
 
-        console.log(totais)
-        if(totais.length){
+        if (totais.length) {
             return totais.reduce((somatoriaAtual = 0, valorItemAtual) => somatoriaAtual + valorItemAtual)
         } else {
-            return 0 
-        } 
+            return 0
+        }
     }
+
+    const realizarNovaVenda = () => {
+        onNovaVenda()   
+        formik.resetForm()
+        formik.setFieldValue('itens', [])
+        formik.setFieldTouched('itens', false)
+    }
+
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -184,7 +195,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                                 value={codigoProduto}
                                 id="codigoProduto"
                                 onChange={e => setCodigoProduto(e.target.value)} />
-                                
+
                             <label htmlFor="codigoProduto">Código</label>
                         </span>
                     </div>
@@ -195,7 +206,7 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                             name="produto"
                             onChange={e => setProduto(e.value)}
                             suggestions={listaFiltradaProdutos} value={produto} field="nome" />
-                            
+
                     </div>
                     <div className="p-col-2">
                         <span className="p-float-label">
@@ -209,17 +220,17 @@ export const VendasForm: React.FC<VendaFormProps> = ({
 
                     <div className="p-col-12">
                         <DataTable value={formik.values.itens} emptyMessage="Nenhum produto adicionado...">
-                            <Column body={ (item: IItemVenda ) => {
+                            <Column body={(item: IItemVenda) => {
 
                                 const handleRemoverItem = () => {
-                                   const novaLista = formik.values.itens?.filter(iv => iv.produto.id != item.produto.id )
+                                    const novaLista = formik.values.itens?.filter(iv => iv.produto.id != item.produto.id)
 
-                                   formik.setFieldValue("itens", novaLista)
+                                    formik.setFieldValue("itens", novaLista)
                                 }
 
 
                                 return (
-                                    <Button label="Excluir" type="button" onClick={handleRemoverItem}/>
+                                    <Button label="Excluir" type="button" onClick={handleRemoverItem} />
                                 )
                             }} />
                             <Column field="produto.id" header="Código" />
@@ -238,22 +249,22 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                             }} />
                         </DataTable>
                         <small className="p-error p-d-block">
-                        {formik.touched && formik.errors.itens}
-                    </small>
+                            {formik.touched && formik.errors.itens}
+                        </small>
                     </div>
                     <div className="p-col-6">
                         <div className="p-field">
                             <label htmlFor="formaPagamento" >Forma de Pagamento: *</label>
-                            <Dropdown 
-                             id="formaPagamento" 
-                             options={formasPagamento}
-                             value={formik.values.formaPagamento} 
-                             onChange={e => formik.setFieldValue("formaPagamento", e.value)}
-                             placeholder="Selecione..."
-                             />
-                             <small className="p-error p-d-block">
-                        { formik.touched && formik.errors.formaPagamento}
-                    </small>
+                            <Dropdown
+                                id="formaPagamento"
+                                options={formasPagamento}
+                                value={formik.values.formaPagamento}
+                                onChange={e => formik.setFieldValue("formaPagamento", e.value)}
+                                placeholder="Selecione..."
+                            />
+                            <small className="p-error p-d-block">
+                                {formik.touched && formik.errors.formaPagamento}
+                            </small>
                         </div>
                     </div>
                     <div className="p-col-3">
@@ -269,8 +280,13 @@ export const VendasForm: React.FC<VendaFormProps> = ({
                         </div>
                     </div>
                 </div>
+                {!vendaRealizada &&
+                    <Button disabled={!produtosArray} type="submit" label="Finalizar" onClick={e => onSubmit(formik.values)} />
+                }
+                {vendaRealizada &&
+                     <Button  type="button" label="Nova venda" className="p-button-success" onClick={realizarNovaVenda}/>
+                }
 
-                <Button disabled={!produtosArray} type="submit" label="Finalizar" />
             </div>
             <Dialog position="center" visible={!!mensagem} onHide={handleFecharDialogProdutoNaoEncontrado} header="Atenção" footer={dialogMensagemFooter}>
                 {mensagem}
