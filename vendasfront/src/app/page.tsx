@@ -1,11 +1,16 @@
-import { Layout } from "./components";
+import { Layout, Dashboard } from "./components";
+import { useDashboardService } from "./api/services/dashboard.service";
+import { IDashboardData } from "./api/models/dashboard/IDashboard";
 
-export default function Home() {
+
+export default async function Home() {
+  
+  const service = useDashboardService()
+  const dashboard: IDashboardData = await service.get()
+
   return (
     <Layout titulo="Dashboard">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores accusantium consequuntur nihil. Doloribus repellat rem cumque iste quod porro, ea nobis quos dicta maiores quaerat obcaecati molestiae, voluptatem labore odio?
-        </p>
+        <Dashboard clientes={dashboard.clientes} produtos={dashboard.produtos} vendas={dashboard.vendas}/>
     </Layout>
   );
 }
