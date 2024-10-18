@@ -12,6 +12,7 @@
     "@4us-dev/utils": "^0.0.15",
     "axios": "^1.7.5",
     "bulma": "^1.0.2",
+    "chart.js": "^3.4.1",
     "formik": "^2.4.6",
     "next": "14.2.5",
     "primeflex": "^2.0.0",

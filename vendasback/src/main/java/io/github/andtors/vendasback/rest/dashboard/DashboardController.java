@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
@@ -27,6 +29,9 @@ public class DashboardController {
         long clientesCount = clientes.count();
         long produtosCount = produtos.count();
 
-        return new DashboardData(produtosCount, clientesCount, vendasCount);
+        var anoCorrente = LocalDate.now().getYear();
+        var vendasPorMes = vendas.obterSomatoriaVendasPorMes(anoCorrente);
+
+        return new DashboardData(produtosCount, clientesCount, vendasCount, vendasPorMes);
     }
 }
